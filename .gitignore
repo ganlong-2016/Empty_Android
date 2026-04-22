@@ -32,3 +32,16 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Gradle caches
+.gradle/
+
+# Build outputs
+**/build/
+
+# Kotlin
+.kotlin/
+
+# Node (if used)
+node_modules/
+
