@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "EmptyAndroid"
+rootProject.name = "Scania"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 

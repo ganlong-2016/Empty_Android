@@ -1,5 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.empty.android.convention.configureAndroidCompose
+import com.scania.android.convention.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

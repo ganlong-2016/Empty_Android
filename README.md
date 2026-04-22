@@ -1,4 +1,4 @@
-# EmptyAndroid
+# Scania
 
 一个模仿 [Now in Android](https://github.com/android/nowinandroid) 架构搭建的、开箱即用的 Android 项目模板。
 
@@ -22,7 +22,7 @@
 ## 目录结构
 
 ```
-EmptyAndroid/
+Scania/
 ├── app/                           # Application / MainActivity / NavHost
 ├── build-logic/convention/        # 9 个 convention plugin，多模块统一配置
 ├── core/
@@ -120,15 +120,15 @@ EmptyAndroid/
 
 | 插件 ID                                      | 作用                                           |
 | -------------------------------------------- | ---------------------------------------------- |
-| `emptyandroid.android.application`           | Application 模块基础配置                       |
-| `emptyandroid.android.application.compose`   | Application 模块启用 Compose                   |
-| `emptyandroid.android.library`               | Library 模块基础配置                           |
-| `emptyandroid.android.library.compose`       | Library 模块启用 Compose                       |
-| **`emptyandroid.android.feature.api`**       | feature `api` 模块（只含路由 key）             |
-| **`emptyandroid.android.feature.impl`**      | feature `impl` 模块（Compose + Hilt + Nav）    |
-| `emptyandroid.android.hilt`                  | 添加 Hilt 依赖和 KSP                           |
-| `emptyandroid.android.room`                  | 添加 Room 依赖和 KSP                           |
-| `emptyandroid.jvm.library`                   | 纯 JVM library                                 |
+| `scania.android.application`           | Application 模块基础配置                       |
+| `scania.android.application.compose`   | Application 模块启用 Compose                   |
+| `scania.android.library`               | Library 模块基础配置                           |
+| `scania.android.library.compose`       | Library 模块启用 Compose                       |
+| **`scania.android.feature.api`**       | feature `api` 模块（只含路由 key）             |
+| **`scania.android.feature.impl`**      | feature `impl` 模块（Compose + Hilt + Nav）    |
+| `scania.android.hilt`                  | 添加 Hilt 依赖和 KSP                           |
+| `scania.android.room`                  | 添加 Room 依赖和 KSP                           |
+| `scania.jvm.library`                   | 纯 JVM library                                 |
 
 ## AGP 9 迁移要点（本模板已适配，新同学请注意）
 
@@ -165,10 +165,10 @@ EmptyAndroid/
 
     ```kotlin
     plugins {
-        alias(libs.plugins.emptyandroid.android.feature.api)
+        alias(libs.plugins.scania.android.feature.api)
     }
     android {
-        namespace = "com.empty.android.feature.yourfeature.api"
+        namespace = "com.scania.android.feature.yourfeature.api"
     }
     ```
 
@@ -186,10 +186,10 @@ EmptyAndroid/
 
     ```kotlin
     plugins {
-        alias(libs.plugins.emptyandroid.android.feature.impl)
+        alias(libs.plugins.scania.android.feature.impl)
     }
     android {
-        namespace = "com.empty.android.feature.yourfeature.impl"
+        namespace = "com.scania.android.feature.yourfeature.impl"
     }
     dependencies {
         implementation(projects.feature.yourfeature.api)

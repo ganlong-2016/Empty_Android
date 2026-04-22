@@ -1,11 +1,11 @@
 plugins {
-    alias(libs.plugins.emptyandroid.android.library)
-    alias(libs.plugins.emptyandroid.android.hilt)
+    alias(libs.plugins.scania.android.library)
+    alias(libs.plugins.scania.android.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.empty.android.core.network"
+    namespace = "com.scania.android.core.network"
 
     buildFeatures {
         buildConfig = true

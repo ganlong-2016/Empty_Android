@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.empty.android.buildlogic"
+group = "com.scania.android.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -25,39 +25,39 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplication") {
-            id = "emptyandroid.android.application"
+            id = "scania.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidApplicationCompose") {
-            id = "emptyandroid.android.application.compose"
+            id = "scania.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("androidLibrary") {
-            id = "emptyandroid.android.library"
+            id = "scania.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidLibraryCompose") {
-            id = "emptyandroid.android.library.compose"
+            id = "scania.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidFeatureApi") {
-            id = "emptyandroid.android.feature.api"
+            id = "scania.android.feature.api"
             implementationClass = "AndroidFeatureApiConventionPlugin"
         }
         register("androidFeatureImpl") {
-            id = "emptyandroid.android.feature.impl"
+            id = "scania.android.feature.impl"
             implementationClass = "AndroidFeatureImplConventionPlugin"
         }
         register("androidHilt") {
-            id = "emptyandroid.android.hilt"
+            id = "scania.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
         register("androidRoom") {
-            id = "emptyandroid.android.room"
+            id = "scania.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
         register("jvmLibrary") {
-            id = "emptyandroid.jvm.library"
+            id = "scania.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
     }

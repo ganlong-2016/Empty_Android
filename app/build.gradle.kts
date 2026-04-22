@@ -1,15 +1,15 @@
 plugins {
-    alias(libs.plugins.emptyandroid.android.application)
-    alias(libs.plugins.emptyandroid.android.application.compose)
-    alias(libs.plugins.emptyandroid.android.hilt)
+    alias(libs.plugins.scania.android.application)
+    alias(libs.plugins.scania.android.application.compose)
+    alias(libs.plugins.scania.android.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.empty.android.app"
+    namespace = "com.scania.android.app"
 
     defaultConfig {
-        applicationId = "com.empty.android.app"
+        applicationId = "com.scania.android.app"
         versionCode = 1
         versionName = "1.0.0"
         targetSdk = 36
