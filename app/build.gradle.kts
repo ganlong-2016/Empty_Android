@@ -46,9 +46,11 @@ dependencies {
     implementation(projects.core.network)
 
     // Feature impl 模块（真正的 UI + ViewModel）
+    implementation(projects.feature.launcher.impl)
     implementation(projects.feature.home.impl)
     implementation(projects.feature.settings.impl)
     // Feature api 模块（app 直接用到路由 key / 跳转函数时依赖）
+    implementation(projects.feature.launcher.api)
     implementation(projects.feature.home.api)
     implementation(projects.feature.settings.api)
 

@@ -1,8 +1,19 @@
 # Scania
 
-一个模仿 [Now in Android](https://github.com/android/nowinandroid) 架构搭建的、开箱即用的 Android 项目模板。
+Scania 车机 Launcher（桌面）项目，基于 [Now in Android](https://github.com/android/nowinandroid)
+架构搭建的多模块 Android 应用。
 
-项目只包含基础通用模块和一点点 demo 代码，不包含具体业务，你可以直接在这个框架上开发你自己的应用。
+应用由两部分组成：
+
+1. **首屏（Splash）**：全屏 3D 模型展示页，当前实现为一个空的 `AndroidView` 占位，
+   后续可以替换为真实 3D 引擎（Filament / SceneView / Unity 等）；
+2. **Launcher 主页（Dashboard）**：从首屏右侧左滑进入，布局为：
+   - 左侧固定「导航卡」，支持边缘拖拽，在 1/3、1/2、2/3 三档屏宽之间切换；
+   - 右侧水平滚动多张卡片：媒体控制、天气、日程、驾驶员信息、车辆状态、快捷方式 …
+   - 卡片可重排序，也可以「两张合并到同一列上下展示」。
+
+大部分业务数据通过 `core:car` 模块抽象出的 `DataSource` / `Repository` 取得，开发/预览时使用
+`FakeXxxDataSource`，真实车机环境下切换为 AIDL / 三方 SDK 实现即可，UI 层完全无感。
 
 ## 技术栈
 
@@ -34,8 +45,12 @@ Scania/
 │   ├── domain/                    # UseCase 示例
 │   ├── model/                     # 纯 Kotlin 领域模型（JVM library）
 │   ├── network/                   # Retrofit API + NetworkModule
+│   ├── car/                       # 车机数据抽象层（AIDL / 三方 SDK / Fake 实现）
 │   └── ui/                        # 跨 feature 通用 UI 组件
 ├── feature/
+│   ├── launcher/
+│   │   ├── api/                   # LauncherRoute + navigateToLauncher
+│   │   └── impl/                  # SplashPage / DashboardPage / 各种卡片 / LauncherViewModel
 │   ├── home/
 │   │   ├── api/                   # 只有导航 key（HomeRoute） + navigateToHome
 │   │   └── impl/                  # HomeScreen / HomeViewModel / homeScreen(NavGraph)
@@ -58,6 +73,38 @@ Scania/
 1. **构建增量友好**：`impl` 变更时，依赖它的模块不需要重新编译（只有 `api` 变动才会波及下游）；
 2. **防止循环依赖**：feature 之间跳转时，`feature:A:impl` 只依赖 `feature:B:api`，绝不依赖 `feature:B:impl`；
 3. **多 App 复用**：benchmark、catalog 等独立 App 可以只依赖 feature 的 `api` 来组装所需模块。
+
+### Launcher 业务架构
+
+```
+         ┌──────────────────────────┐
+         │    feature:launcher:impl │
+         │  ┌────────────────────┐  │
+         │  │   SplashPage       │  │  ← 3D 全屏展示（AndroidView 占位）
+         │  └────────────────────┘  │
+         │  ┌────────────────────┐  │
+         │  │   DashboardPage    │  │  ← 左侧固定导航卡 + 右侧水平卡片
+         │  │  NavigationCard /  │  │
+         │  │  MediaCard /       │  │
+         │  │  WeatherCard /     │  │
+         │  │  CalendarCard /    │  │
+         │  │  DriverCard /      │  │
+         │  │  VehicleCard /     │  │
+         │  │  ShortcutsCard     │  │
+         │  └────────────────────┘  │
+         └────────────┬─────────────┘
+                      ▼
+               ┌──────────────┐
+               │  core:car    │   ← 车机数据抽象层
+               └──────┬───────┘
+        ┌─────────────┼──────────────┐
+        ▼             ▼              ▼
+  MediaDataSource  WeatherDataSource …（AIDL / 三方 SDK / Fake）
+```
+
+所有卡片都从 `LauncherViewModel` 订阅 `combine(...)` 出来的 `DashboardState`，
+真实车机接入时只需要在 `core:car/di/CarBindings.kt` 里把 `Fake*DataSource` 换成 AIDL 绑定的
+`Real*DataSource` 即可，UI 与 ViewModel 不需要改动。
 
 ### 模块依赖图
 
