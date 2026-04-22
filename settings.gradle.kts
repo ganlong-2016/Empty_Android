@@ -38,6 +38,8 @@ include(":core:datastore")
 include(":core:network")
 include(":core:domain")
 
-// Feature modules
-include(":feature:home")
-include(":feature:settings")
+// Feature modules (api + impl 分离，参考 nowinandroid)
+include(":feature:home:api")
+include(":feature:home:impl")
+include(":feature:settings:api")
+include(":feature:settings:impl")

@@ -40,9 +40,13 @@ gradlePlugin {
             id = "emptyandroid.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
-        register("androidFeature") {
-            id = "emptyandroid.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
+        register("androidFeatureApi") {
+            id = "emptyandroid.android.feature.api"
+            implementationClass = "AndroidFeatureApiConventionPlugin"
+        }
+        register("androidFeatureImpl") {
+            id = "emptyandroid.android.feature.impl"
+            implementationClass = "AndroidFeatureImplConventionPlugin"
         }
         register("androidHilt") {
             id = "emptyandroid.android.hilt"

@@ -45,8 +45,12 @@ dependencies {
     implementation(projects.core.database)
     implementation(projects.core.network)
 
-    implementation(projects.feature.home)
-    implementation(projects.feature.settings)
+    // Feature impl 模块（真正的 UI + ViewModel）
+    implementation(projects.feature.home.impl)
+    implementation(projects.feature.settings.impl)
+    // Feature api 模块（app 直接用到路由 key / 跳转函数时依赖）
+    implementation(projects.feature.home.api)
+    implementation(projects.feature.settings.api)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

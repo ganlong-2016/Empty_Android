@@ -1,6 +1,7 @@
 package com.empty.android.convention
 
 import com.android.build.api.dsl.CommonExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -15,25 +16,33 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 internal val Project.libs: VersionCatalog
     get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
+/**
+ * AGP 9 通用 Android 配置。
+ *
+ * AGP 9 变化：
+ * - [CommonExtension] 不再带泛型参数；
+ * - DSL 方法形式（如 `defaultConfig { ... }`）被移除，只保留属性访问，
+ *   因此这里使用 `xxx.apply { ... }` 的方式配置。
+ */
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    commonExtension: CommonExtension,
 ) {
     commonExtension.apply {
         compileSdk = 36
 
-        defaultConfig {
+        defaultConfig.apply {
             minSdk = 24
         }
 
-        compileOptions {
-            sourceCompatibility = org.gradle.api.JavaVersion.VERSION_17
-            targetCompatibility = org.gradle.api.JavaVersion.VERSION_17
+        compileOptions.apply {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
             isCoreLibraryDesugaringEnabled = true
         }
 
-        packaging {
-            resources {
-                excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        packaging.apply {
+            resources.apply {
+                excludes.add("/META-INF/{AL2.0,LGPL2.1}")
             }
         }
     }
@@ -41,7 +50,7 @@ internal fun Project.configureKotlinAndroid(
     extensions.configure<KotlinAndroidProjectExtension> {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
-            freeCompilerArgs.add("-Xjvm-default=all")
+            freeCompilerArgs.add("-jvm-default=enable")
         }
     }
 
@@ -52,13 +61,13 @@ internal fun Project.configureKotlinAndroid(
 
 internal fun Project.configureKotlinJvm() {
     extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = org.gradle.api.JavaVersion.VERSION_17
-        targetCompatibility = org.gradle.api.JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     extensions.configure<KotlinJvmProjectExtension> {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
-            freeCompilerArgs.add("-Xjvm-default=all")
+            freeCompilerArgs.add("-jvm-default=enable")
         }
     }
 }

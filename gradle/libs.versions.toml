@@ -1,8 +1,8 @@
 [versions]
 # Build tools
-agp = "8.13.2"
-kotlin = "2.1.20"
-ksp = "2.1.20-1.0.32"
+agp = "9.1.1"
+kotlin = "2.3.20"
+ksp = "2.3.6"
 
 # AndroidX core
 androidxCoreKtx = "1.18.0"
@@ -21,14 +21,14 @@ androidxSplashscreen = "1.2.0"
 androidxComposeBom = "2026.03.01"
 
 # Hilt
-hilt = "2.56.2"
+hilt = "2.59.2"
 hiltExt = "1.3.0"
 
 # Coroutines
 kotlinxCoroutines = "1.10.2"
 
 # Serialization
-kotlinxSerializationJson = "1.9.0"
+kotlinxSerializationJson = "1.11.0"
 
 # Network
 retrofit = "3.0.0"
@@ -149,7 +149,8 @@ emptyandroid-android-application = { id = "emptyandroid.android.application", ve
 emptyandroid-android-application-compose = { id = "emptyandroid.android.application.compose", version = "unspecified" }
 emptyandroid-android-library = { id = "emptyandroid.android.library", version = "unspecified" }
 emptyandroid-android-library-compose = { id = "emptyandroid.android.library.compose", version = "unspecified" }
-emptyandroid-android-feature = { id = "emptyandroid.android.feature", version = "unspecified" }
+emptyandroid-android-feature-api = { id = "emptyandroid.android.feature.api", version = "unspecified" }
+emptyandroid-android-feature-impl = { id = "emptyandroid.android.feature.impl", version = "unspecified" }
 emptyandroid-android-hilt = { id = "emptyandroid.android.hilt", version = "unspecified" }
 emptyandroid-android-room = { id = "emptyandroid.android.room", version = "unspecified" }
 emptyandroid-jvm-library = { id = "emptyandroid.jvm.library", version = "unspecified" }
