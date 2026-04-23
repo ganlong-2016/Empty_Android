@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,27 +16,54 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
+
+data class NavigationCardUiState(
+    val currentLocation: String = "Södertälje, Sweden",
+    val destination: String? = null,
+)
 
 /**
- * 导航卡：Launcher 左侧固定卡，显示地图 + 当前行程。
- *
- * 中间的渐变 Box 是地图占位符，后续可以换成真实地图 SDK
- *（高德 / 华为 / Google Maps 等）的 View。
+ * 导航卡 ViewModel。真实车机接入地图 SDK 后，这里从
+ * `NavigationRepository`（新增一个即可，不影响其它卡片）里读取路况/路线信息。
  */
+@HiltViewModel
+class NavigationCardViewModel @Inject constructor() : ViewModel() {
+
+    private val _uiState = MutableStateFlow(NavigationCardUiState())
+    val uiState: StateFlow<NavigationCardUiState> = _uiState.asStateFlow()
+}
+
 @Composable
 fun NavigationCard(
     modifier: Modifier = Modifier,
-    currentLocation: String = "Södertälje, Sweden",
-    destination: String? = null,
+    viewModel: NavigationCardViewModel = hiltViewModel(),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    NavigationCardContent(state, modifier = modifier)
+}
+
+@Composable
+fun NavigationCardContent(
+    state: NavigationCardUiState,
+    modifier: Modifier = Modifier,
 ) {
     CardFrame(
         title = "导航",
-        subtitle = currentLocation,
+        subtitle = state.currentLocation,
         modifier = modifier,
         accent = MaterialTheme.colorScheme.primary,
     ) {
@@ -68,7 +94,7 @@ fun NavigationCard(
                 )
             }
 
-            if (destination != null) {
+            if (state.destination != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -79,7 +105,7 @@ fun NavigationCard(
                         tint = MaterialTheme.colorScheme.primary,
                     )
                     Text(
-                        text = destination,
+                        text = state.destination,
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }
@@ -102,8 +128,7 @@ fun NavigationResizeHandle(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
         Box(

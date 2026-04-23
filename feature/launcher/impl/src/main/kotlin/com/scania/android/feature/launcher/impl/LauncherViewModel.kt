@@ -1,73 +1,52 @@
 package com.scania.android.feature.launcher.impl
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.scania.android.core.car.model.CalendarEvent
-import com.scania.android.core.car.model.DriverProfile
-import com.scania.android.core.car.model.MediaPlayback
-import com.scania.android.core.car.model.VehicleStatus
-import com.scania.android.core.car.model.WeatherInfo
-import com.scania.android.core.car.repository.CalendarRepository
-import com.scania.android.core.car.repository.DriverProfileRepository
-import com.scania.android.core.car.repository.MediaRepository
-import com.scania.android.core.car.repository.VehicleStatusRepository
-import com.scania.android.core.car.repository.WeatherRepository
 import com.scania.android.feature.launcher.impl.dashboard.DashboardCardType
 import com.scania.android.feature.launcher.impl.dashboard.DashboardSlot
 import com.scania.android.feature.launcher.impl.dashboard.NavigationWidthLevel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Launcher 页状态：
- * - [dashboardState]：来自 AIDL / SDK 的各类业务数据汇总；
- * - [slots]：卡片布局（可重排、可合并），由用户交互修改，存放在内存中（后续可下沉到 DataStore）。
+ * Launcher 顶层 ViewModel —— **只**负责桌面布局状态：
+ *
+ * - [slots]：卡片的排列/合并/拆分；
+ * - [navigationWidthFraction]：导航卡当前占屏宽的比例（拖拽时连续变化）；
+ * - [navigationWidthLevel]：松手后 snap 到的离散档位（1/3、1/2、2/3）。
+ *
+ * 每张业务卡片的数据（媒体、天气、日程、车辆……）都由**自己的 [HiltViewModel]** 负责，
+ * 这里不聚合，避免一个大 `UiState` 越变越臃肿。新增/删除卡片只需要改
+ * [DashboardCardType] 和 `CardHost`，不用改本 ViewModel。
  */
 @HiltViewModel
-class LauncherViewModel @Inject constructor(
-    private val mediaRepository: MediaRepository,
-    weatherRepository: WeatherRepository,
-    calendarRepository: CalendarRepository,
-    driverProfileRepository: DriverProfileRepository,
-    vehicleStatusRepository: VehicleStatusRepository,
-) : ViewModel() {
-
-    val dashboardState: StateFlow<DashboardState> = combine(
-        mediaRepository.playback,
-        weatherRepository.current,
-        calendarRepository.events,
-        driverProfileRepository.currentDriver,
-        vehicleStatusRepository.status,
-    ) { media, weather, events, driver, vehicle ->
-        DashboardState(
-            media = media,
-            weather = weather,
-            events = events,
-            driver = driver,
-            vehicle = vehicle,
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = DashboardState(),
-    )
+class LauncherViewModel @Inject constructor() : ViewModel() {
 
     private val _slots = MutableStateFlow(defaultSlots)
     val slots: StateFlow<List<DashboardSlot>> = _slots.asStateFlow()
 
-    private val _navigationWidth = MutableStateFlow(NavigationWidthLevel.OneThird)
-    val navigationWidth: StateFlow<NavigationWidthLevel> = _navigationWidth.asStateFlow()
+    private val _navigationWidthFraction = MutableStateFlow(NavigationWidthLevel.OneThird.fraction)
+    val navigationWidthFraction: StateFlow<Float> = _navigationWidthFraction.asStateFlow()
 
-    fun onNavigationWidthDrag(fraction: Float) {
-        _navigationWidth.value = NavigationWidthLevel.nearest(fraction.coerceIn(0.2f, 0.75f))
+    val navigationWidthLevel: NavigationWidthLevel
+        get() = NavigationWidthLevel.nearest(_navigationWidthFraction.value)
+
+    /** 拖拽过程中调用：按像素增量累加到当前 fraction，保持实时响应。 */
+    fun dragNavigationWidth(deltaFraction: Float) {
+        _navigationWidthFraction.update { current ->
+            (current + deltaFraction).coerceIn(
+                NavigationWidthLevel.MinFraction,
+                NavigationWidthLevel.MaxFraction,
+            )
+        }
+    }
+
+    /** 松手时调用：snap 到最近的一档。 */
+    fun snapNavigationWidth() {
+        _navigationWidthFraction.update { NavigationWidthLevel.nearest(it).fraction }
     }
 
     /**
@@ -130,20 +109,6 @@ class LauncherViewModel @Inject constructor(
         }
     }
 
-    fun onTogglePlay() {
-        viewModelScope.launch {
-            val state = dashboardState.value.media
-            if (state?.state == com.scania.android.core.car.model.MediaPlaybackState.Playing) {
-                mediaRepository.pause()
-            } else {
-                mediaRepository.play()
-            }
-        }
-    }
-
-    fun onNext() = viewModelScope.launch { mediaRepository.next() }
-    fun onPrevious() = viewModelScope.launch { mediaRepository.previous() }
-
     companion object {
         private val defaultSlots: List<DashboardSlot> = listOf(
             DashboardSlot("slot_nav", DashboardCardType.Navigation),
@@ -156,11 +121,3 @@ class LauncherViewModel @Inject constructor(
         )
     }
 }
-
-data class DashboardState(
-    val media: MediaPlayback? = null,
-    val weather: WeatherInfo? = null,
-    val events: List<CalendarEvent> = emptyList(),
-    val driver: DriverProfile? = null,
-    val vehicle: VehicleStatus? = null,
-)

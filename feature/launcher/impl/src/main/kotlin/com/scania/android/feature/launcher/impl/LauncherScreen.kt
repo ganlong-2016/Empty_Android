@@ -17,20 +17,21 @@ import com.scania.android.feature.launcher.impl.splash.SplashPage
 /**
  * Launcher 顶层入口：
  *
- * - [HorizontalPager] 有两页：
+ * - [HorizontalPager] 两页：
  *   - 第 0 页：[SplashPage]（3D 模型全屏）；
  *   - 第 1 页：[DashboardPage]（卡片主页）。
+ *   从 3D 页面向左滑动即进入主页。
  *
- *   从 3D 页面向左滑动即可进入主页，符合需求描述里的「右侧左滑进入 launcher 主页」。
+ * 这里只从 [LauncherViewModel] 取「布局状态」（卡片顺序、导航卡宽度）；
+ * 每张业务卡片的具体数据在卡片内部通过自己的 `@HiltViewModel` 订阅。
  */
 @Composable
 fun LauncherScreen(
     modifier: Modifier = Modifier,
     viewModel: LauncherViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.dashboardState.collectAsStateWithLifecycle()
     val slots by viewModel.slots.collectAsStateWithLifecycle()
-    val navWidth by viewModel.navigationWidth.collectAsStateWithLifecycle()
+    val navWidth by viewModel.navigationWidthFraction.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { 2 })
 
@@ -44,15 +45,10 @@ fun LauncherScreen(
         when (page) {
             0 -> SplashPage()
             1 -> DashboardPage(
-                state = state,
                 slots = slots,
-                navigationWidth = navWidth,
-                onNavigationWidthDrag = viewModel::onNavigationWidthDrag,
-                onMergeInto = viewModel::mergeInto,
-                onSplit = viewModel::splitSlot,
-                onTogglePlay = viewModel::onTogglePlay,
-                onNext = { viewModel.onNext() },
-                onPrevious = { viewModel.onPrevious() },
+                navigationWidthFraction = navWidth,
+                onNavigationWidthDrag = viewModel::dragNavigationWidth,
+                onNavigationWidthDragEnd = viewModel::snapNavigationWidth,
             )
         }
     }

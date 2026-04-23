@@ -22,30 +22,54 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-data class Shortcut(val label: String, val icon: ImageVector)
-
-private val defaultShortcuts = listOf(
-    Shortcut("电话", Icons.Default.Phone),
-    Shortcut("蓝牙", Icons.Default.Bluetooth),
-    Shortcut("Wi-Fi", Icons.Default.Wifi),
-    Shortcut("音乐", Icons.Default.MusicNote),
-    Shortcut("路况", Icons.Default.Traffic),
-    Shortcut("设置", Icons.Default.Settings),
+data class ShortcutItem(
+    val id: String,
+    val label: String,
+    val icon: ImageVector,
 )
+
+data class ShortcutsCardUiState(
+    val items: List<ShortcutItem> = defaultShortcuts,
+)
+
+@HiltViewModel
+class ShortcutsCardViewModel @Inject constructor() : ViewModel() {
+
+    private val _uiState = MutableStateFlow(ShortcutsCardUiState())
+    val uiState: StateFlow<ShortcutsCardUiState> = _uiState.asStateFlow()
+}
 
 @Composable
 fun ShortcutsCard(
     modifier: Modifier = Modifier,
-    shortcuts: List<Shortcut> = defaultShortcuts,
+    viewModel: ShortcutsCardViewModel = hiltViewModel(),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    ShortcutsCardContent(state, modifier = modifier)
+}
+
+@Composable
+fun ShortcutsCardContent(
+    state: ShortcutsCardUiState,
+    modifier: Modifier = Modifier,
 ) {
     CardFrame(
         title = "快捷方式",
-        subtitle = "${shortcuts.size} 项",
+        subtitle = "${state.items.size} 项",
         modifier = modifier,
     ) {
         LazyVerticalGrid(
@@ -54,7 +78,7 @@ fun ShortcutsCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(shortcuts) { shortcut ->
+            items(state.items, key = { it.id }) { shortcut ->
                 ShortcutTile(shortcut)
             }
         }
@@ -62,7 +86,7 @@ fun ShortcutsCard(
 }
 
 @Composable
-private fun ShortcutTile(shortcut: Shortcut) {
+private fun ShortcutTile(shortcut: ShortcutItem) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
@@ -90,3 +114,12 @@ private fun ShortcutTile(shortcut: Shortcut) {
         }
     }
 }
+
+private val defaultShortcuts = listOf(
+    ShortcutItem("phone", "电话", Icons.Default.Phone),
+    ShortcutItem("bt", "蓝牙", Icons.Default.Bluetooth),
+    ShortcutItem("wifi", "Wi-Fi", Icons.Default.Wifi),
+    ShortcutItem("music", "音乐", Icons.Default.MusicNote),
+    ShortcutItem("traffic", "路况", Icons.Default.Traffic),
+    ShortcutItem("settings", "设置", Icons.Default.Settings),
+)

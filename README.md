@@ -102,7 +102,27 @@ Scania/
   MediaDataSource  WeatherDataSource …（AIDL / 三方 SDK / Fake）
 ```
 
-所有卡片都从 `LauncherViewModel` 订阅 `combine(...)` 出来的 `DashboardState`，
+为了避免 Dashboard 顶层 UiState 随着卡片数量膨胀，**每张卡片都有自己的 `@HiltViewModel`
+和 `XxxCardUiState`**，`LauncherViewModel` 只管：
+
+- `slots`（卡片布局，含合并/拆分/重排）
+- `navigationWidthFraction`（导航卡宽度，连续值，拖拽中实时更新；松手 snap 到 1/3、1/2、2/3）
+
+每张卡片的二层结构：
+
+```
+XxxCard(modifier, viewModel = hiltViewModel())   // Stateful 外壳，由 CardHost 调用
+    └─ XxxCardContent(state, on...)              // Stateless 渲染层，便于 Preview/测试
+```
+
+新增一张卡片只需要：
+
+1. 在 `DashboardCardType` 里加一个枚举值；
+2. 在 `cards/` 新增 `XxxCard.kt`（UiState + HiltViewModel + Content + Stateful 外壳）；
+3. 在 `CardHost.kt` 的 `when` 里加一个分支。
+
+`LauncherViewModel` 和其它卡片都不用动。
+
 真实车机接入时只需要在 `core:car/di/CarBindings.kt` 里把 `Fake*DataSource` 换成 AIDL 绑定的
 `Real*DataSource` 即可，UI 与 ViewModel 不需要改动。
 

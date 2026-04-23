@@ -3,8 +3,12 @@ package com.scania.android.feature.launcher.impl.dashboard
 /**
  * Launcher Dashboard 可用的卡片类型。
  *
- * 导航卡（[Navigation]）固定钉在左侧、宽度可拖拽；其他卡片水平排列，可拖拽重排、
- * 也可以上下合并到同一个「槽位」里形成上下两段的复合卡。
+ * 新增一类卡片只需要：
+ * 1. 在这里加一个 enum 值；
+ * 2. 新建 `cards/XxxCard.kt`（内部带 `@HiltViewModel`）；
+ * 3. 在 `CardHost` 的 `when` 分支里加上分发。
+ *
+ * 整条链路不需要动 [com.scania.android.feature.launcher.impl.LauncherViewModel]。
  */
 enum class DashboardCardType {
     Navigation,
@@ -30,15 +34,20 @@ data class DashboardSlot(
 
 /**
  * 导航卡在宽度轴上的离散档位。对应 1/3、1/2、2/3 屏宽。
+ *
+ * 拖拽中我们使用连续 fraction 实时渲染；松手时再 snap 到这里面最近的一档。
  */
 enum class NavigationWidthLevel(val fraction: Float) {
-    OneThird(0.33f),
+    OneThird(1f / 3f),
     Half(0.5f),
-    TwoThird(0.66f),
+    TwoThird(2f / 3f),
     ;
 
     companion object {
+        val MinFraction: Float = OneThird.fraction
+        val MaxFraction: Float = TwoThird.fraction
+
         fun nearest(fraction: Float): NavigationWidthLevel =
-            values().minBy { kotlin.math.abs(it.fraction - fraction) }
+            entries.minBy { kotlin.math.abs(it.fraction - fraction) }
     }
 }
