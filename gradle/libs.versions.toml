@@ -145,12 +145,12 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Convention plugins from build-logic
-emptyandroid-android-application = { id = "emptyandroid.android.application", version = "unspecified" }
-emptyandroid-android-application-compose = { id = "emptyandroid.android.application.compose", version = "unspecified" }
-emptyandroid-android-library = { id = "emptyandroid.android.library", version = "unspecified" }
-emptyandroid-android-library-compose = { id = "emptyandroid.android.library.compose", version = "unspecified" }
-emptyandroid-android-feature-api = { id = "emptyandroid.android.feature.api", version = "unspecified" }
-emptyandroid-android-feature-impl = { id = "emptyandroid.android.feature.impl", version = "unspecified" }
-emptyandroid-android-hilt = { id = "emptyandroid.android.hilt", version = "unspecified" }
-emptyandroid-android-room = { id = "emptyandroid.android.room", version = "unspecified" }
-emptyandroid-jvm-library = { id = "emptyandroid.jvm.library", version = "unspecified" }
+scania-android-application = { id = "scania.android.application", version = "unspecified" }
+scania-android-application-compose = { id = "scania.android.application.compose", version = "unspecified" }
+scania-android-library = { id = "scania.android.library", version = "unspecified" }
+scania-android-library-compose = { id = "scania.android.library.compose", version = "unspecified" }
+scania-android-feature-api = { id = "scania.android.feature.api", version = "unspecified" }
+scania-android-feature-impl = { id = "scania.android.feature.impl", version = "unspecified" }
+scania-android-hilt = { id = "scania.android.hilt", version = "unspecified" }
+scania-android-room = { id = "scania.android.room", version = "unspecified" }
+scania-jvm-library = { id = "scania.jvm.library", version = "unspecified" }

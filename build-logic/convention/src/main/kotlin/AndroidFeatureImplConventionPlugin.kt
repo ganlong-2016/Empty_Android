@@ -1,4 +1,4 @@
-import com.empty.android.convention.libs
+import com.scania.android.convention.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
@@ -15,9 +15,9 @@ class AndroidFeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("emptyandroid.android.library")
-                apply("emptyandroid.android.library.compose")
-                apply("emptyandroid.android.hilt")
+                apply("scania.android.library")
+                apply("scania.android.library.compose")
+                apply("scania.android.hilt")
                 apply("org.jetbrains.kotlin.plugin.serialization")
             }
 

@@ -1,15 +1,15 @@
 plugins {
-    alias(libs.plugins.emptyandroid.android.application)
-    alias(libs.plugins.emptyandroid.android.application.compose)
-    alias(libs.plugins.emptyandroid.android.hilt)
+    alias(libs.plugins.scania.android.application)
+    alias(libs.plugins.scania.android.application.compose)
+    alias(libs.plugins.scania.android.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.empty.android.app"
+    namespace = "com.scania.android.app"
 
     defaultConfig {
-        applicationId = "com.empty.android.app"
+        applicationId = "com.scania.android.app"
         versionCode = 1
         versionName = "1.0.0"
         targetSdk = 36
@@ -46,9 +46,11 @@ dependencies {
     implementation(projects.core.network)
 
     // Feature impl 模块（真正的 UI + ViewModel）
+    implementation(projects.feature.launcher.impl)
     implementation(projects.feature.home.impl)
     implementation(projects.feature.settings.impl)
     // Feature api 模块（app 直接用到路由 key / 跳转函数时依赖）
+    implementation(projects.feature.launcher.api)
     implementation(projects.feature.home.api)
     implementation(projects.feature.settings.api)
 

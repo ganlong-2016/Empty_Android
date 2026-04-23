@@ -1,4 +1,4 @@
-import com.empty.android.convention.configureKotlinJvm
+import com.scania.android.convention.configureKotlinJvm
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
