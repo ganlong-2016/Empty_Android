@@ -33,7 +33,7 @@ Empty_Android项目，基于 [Now in Android](https://github.com/android/nowinan
 ## 目录结构
 
 ```
-Scania/
+Empty_Android/
 ├── app/                           # Application / MainActivity / NavHost
 ├── build-logic/convention/        # 9 个 convention plugin，多模块统一配置
 ├── core/
