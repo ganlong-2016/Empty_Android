@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
@@ -23,12 +21,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.empty.android.core.ui.DemoItemCard
+import com.empty.android.core.model.DemoItem
+import com.empty.android.core.ui.DraggableCardGrid
+import com.empty.android.core.ui.GridCardItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,18 +73,40 @@ fun HomeScreen(
                 HomeUiState.Empty -> EmptyPlaceholder()
                 is HomeUiState.Error -> ErrorPlaceholder(message = state.message)
                 is HomeUiState.Success -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(state.items, key = { it.id }) { item ->
-                            DemoItemCard(
-                                item = item,
-                                onClick = { viewModel.remove(item.id) },
-                            )
-                        }
-                    }
+                    HomeCardGrid(items = state.items)
                 }
             }
         }
     }
+}
+
+@Composable
+private fun HomeCardGrid(
+    items: List<DemoItem>,
+) {
+    val navigationCard = GridCardItem(
+        id = "nav_settings",
+        title = "设置",
+        subtitle = "主题模式 · 动态取色",
+        isNavigation = true,
+    )
+
+    var cards by remember(items) {
+        val itemCards = items.map { item ->
+            GridCardItem(
+                id = item.id,
+                title = item.title,
+                subtitle = item.description,
+            )
+        }
+        mutableStateOf(listOf(navigationCard) + itemCards)
+    }
+
+    DraggableCardGrid(
+        cards = cards,
+        onCardsChanged = { newCards -> cards = newCards },
+        columns = 2,
+    )
 }
 
 @Composable
