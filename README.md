@@ -1,6 +1,6 @@
-# Scania
+# Empty_Android
 
-Scania 车机 Launcher（桌面）项目，基于 [Now in Android](https://github.com/android/nowinandroid)
+Empty_Android项目，基于 [Now in Android](https://github.com/android/nowinandroid)
 架构搭建的多模块 Android 应用。
 
 应用由两部分组成：
