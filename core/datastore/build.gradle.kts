@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.emptyandroid.android.library)
-    alias(libs.plugins.emptyandroid.android.hilt)
+    alias(libs.plugins.scania.android.library)
+    alias(libs.plugins.scania.android.hilt)
 }
 
 android {
-    namespace = "com.empty.android.core.datastore"
+    namespace = "com.scania.android.core.datastore"
 }
 
 dependencies {

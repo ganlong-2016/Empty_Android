@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.emptyandroid.android.feature.api)
+    alias(libs.plugins.scania.android.feature.api)
 }
 
 android {
-    namespace = "com.empty.android.feature.home.api"
+    namespace = "com.scania.android.feature.home.api"
 }

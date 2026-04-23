@@ -1,11 +1,11 @@
 plugins {
-    alias(libs.plugins.emptyandroid.android.library)
-    alias(libs.plugins.emptyandroid.android.hilt)
-    alias(libs.plugins.emptyandroid.android.room)
+    alias(libs.plugins.scania.android.library)
+    alias(libs.plugins.scania.android.hilt)
+    alias(libs.plugins.scania.android.room)
 }
 
 android {
-    namespace = "com.empty.android.core.database"
+    namespace = "com.scania.android.core.database"
 }
 
 dependencies {

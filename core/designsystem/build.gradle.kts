@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.emptyandroid.android.library)
-    alias(libs.plugins.emptyandroid.android.library.compose)
+    alias(libs.plugins.scania.android.library)
+    alias(libs.plugins.scania.android.library.compose)
 }
 
 android {
-    namespace = "com.empty.android.core.designsystem"
+    namespace = "com.scania.android.core.designsystem"
 }
 
 dependencies {
