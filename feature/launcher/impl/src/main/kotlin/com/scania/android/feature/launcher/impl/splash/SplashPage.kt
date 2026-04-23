@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -77,22 +76,23 @@ fun SplashPage(
             )
         }
 
-        Row(
+        Column(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(horizontal = 32.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Text(
-                text = "左滑进入主页",
-                style = MaterialTheme.typography.titleSmall,
-                color = White.copy(alpha = 0.85f),
-            )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null,
-                tint = White,
+                tint = White.copy(alpha = 0.85f),
                 modifier = Modifier.size(32.dp),
+            )
+            Text(
+                text = "左滑进入主页",
+                style = MaterialTheme.typography.labelSmall,
+                color = White.copy(alpha = 0.7f),
             )
         }
     }
